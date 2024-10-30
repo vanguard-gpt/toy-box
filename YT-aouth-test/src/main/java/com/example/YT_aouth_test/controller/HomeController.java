@@ -57,6 +57,6 @@ public class HomeController {
                 model.addAttribute("live", false);
             }
         }
-        return "home";
+        return "home"; // home.html 뷰로 이동
     }
 }

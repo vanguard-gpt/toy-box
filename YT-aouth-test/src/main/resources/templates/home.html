@@ -8,21 +8,41 @@
             font-family: Arial, sans-serif;
         }
 
-        /* 좌측 채팅창 스타일 */
-        .chat-container {
-            width: 400px;
-            height: 600px;
-            border: none;
-        }
-
         /* 전체 레이아웃 스타일 */
         .container {
             display: flex;
             align-items: flex-start;
         }
 
-        .content {
-            margin-left: 20px;
+        /* 좌측 채팅창 스타일 */
+        .chat-container {
+            width: 45%;
+            height: 600px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+        }
+
+        .chat-author {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        /* 우측 iframe 스타일 */
+        .iframe-container {
+            width: 45%;
+            height: 600px;
+            margin-left: 5%;
+        }
+
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
@@ -31,18 +51,25 @@
 <a href="/logout">로그아웃</a>
 
 <div class="container">
-    <!-- 좌측 영역: 라이브 채팅 임베드 -->
+    <!-- 좌측 영역: 기존 라이브 채팅 -->
     <div class="chat" th:if="${live}">
-        <h2>라이브 채팅</h2>
-        <iframe
-                class="chat-container"
-                th:src="'https://www.youtube.com/live_chat?is_popout=1&v=' + ${videoId}"
-                allowfullscreen>
-        </iframe>
+        <h2>라이브 채팅 (API 방식)</h2>
+        <div class="chat-container">
+            <div th:each="message : ${messages}" class="chat-message">
+                <span class="chat-author" th:text="${message.authorDetails.displayName}">사용자</span>:
+                <span th:text="${message.snippet.displayMessage}">메시지</span>
+            </div>
+        </div>
     </div>
     <!-- 라이브 방송이 아닐 경우 메시지 표시 -->
     <div class="content" th:if="${!live}">
         <p>방송이 진행중이지 않습니다.</p>
+    </div>
+
+    <!-- 우측 영역: iframe으로 임베딩한 라이브 채팅 -->
+    <div class="iframe-container" th:if="${live}">
+        <h2>라이브 채팅 (iframe 방식)</h2>
+        <iframe th:src="'https://www.youtube.com/live_chat?v=' + ${videoId} + '&embed_domain=localhost'"></iframe>
     </div>
 </div>
 </body>
